@@ -1,24 +1,40 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+const API_KEY = "f0a3375abec28c42d705f6252304d61a";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const cityInput = document.getElementById("city") as HTMLInputElement;
+const button = document.getElementById("getWeather") as HTMLElement;
+const temperatureEl = document.getElementById("temperature") as HTMLElement;
+const descriptionEl = document.getElementById("description") as HTMLElement;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+type WeatherData = {
+  main: { temp: number };
+  weather: { description: string }[];
+};
+
+async function getWeather(city: string) {
+  try {
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=sv`
+    );
+    
+    if (!response.ok) {
+      throw new Error("Stad hittades inte");
+    }
+
+    const data: WeatherData = await response.json();
+
+    temperatureEl.textContent = `Temperatur: ${data.main.temp} °C`;
+    descriptionEl.textContent = `Väder: ${data.weather[0].description}`;
+  } catch (error) {
+    console.error(error);
+    temperatureEl.textContent = "";
+    descriptionEl.textContent = "Kunde inte hämta väder.";
+  }
+}
+
+// Eventlyssnare på knapp
+button.addEventListener("click", () => {
+  const city = cityInput.value.trim();
+  if (city) {
+    getWeather(city);
+  }
+});
