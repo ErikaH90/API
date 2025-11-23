@@ -38,3 +38,4 @@ button.addEventListener("click", () => {
     getWeather(city);
   }
 });
+
