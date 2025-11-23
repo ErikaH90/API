@@ -32,10 +32,15 @@ async function getWeather(city: string) {
 }
 
 // Eventlyssnare på knapp
-button.addEventListener("click", () => {
-  const city = cityInput.value.trim();
-  if (city) {
-    getWeather(city);
-  }
+window.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("getWeather") as HTMLElement | null;
+
+  if (!button) return;
+
+  button.addEventListener("click", () => {
+    console.log("Klick!");
+  });
 });
+
+
 
